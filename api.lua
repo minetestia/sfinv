@@ -1,9 +1,9 @@
 -- A cleaner, simpler solution to having an advanced inventory in Minetest.
 ---@class SFInv
 sfinv = {
-  ---@type table<string, SFInv.PageDef>
+  ---@type table<string, SFInv.Page>
   pages = {},
-  ---@type SFInv.PageDef[]
+  ---@type SFInv.Page[]
   pages_unordered = {},
   ---@type table<string, SFInv.Context>
   contexts = {},
@@ -15,17 +15,20 @@ sfinv = {
 -- SFInv will clear the stored data on log out / log in.
 ---@class SFInv.Context
 ---@field page string Current page name.
----@field nav string[] A list of page names.
----@field nav_titles string[] A list of page titles.
----@field nav_idx integer Current nav index (in nav and nav_titles).
+---@field nav string[]|nil A list of page names.
+---@field nav_titles string[]|nil A list of page titles.
+---@field nav_idx integer|nil Current nav index (in nav and nav_titles).
 
 ---@class SFInv.PageDef
 ---@field title string Human readable page name.
----@field get fun(self:SFInv, player:mt.PlayerObjectRef, context:SFInv.Context):string Returns a formspec string.
----@field is_in_nav nil|fun(self:SFInv.PageDef, player:mt.PlayerObjectRef, context:SFInv.Context):boolean Return true to show in the navigation (the tab header, by default).
----@field on_player_receive_fields nil|fun(self:SFInv.PageDef, player:mt.PlayerObjectRef, context:SFInv.Context, fields:unknown) On formspec submit.
----@field on_enter nil|fun(self:SFInv.PageDef, player:mt.PlayerObjectRef, context:SFInv.Context) Called when the player changes pages, usually using the tabs.
----@field on_leave nil|fun(self:SFInv.PageDef, player:mt.PlayerObjectRef, context:SFInv.Context) When leaving this page to go to another, called before other's on_enter.
+---@field get fun(self:SFInv.Page, player:mt.PlayerObjectRef, context:SFInv.Context):string Returns a formspec string.
+---@field is_in_nav nil|fun(self:SFInv.Page, player:mt.PlayerObjectRef, context:SFInv.Context):boolean Return true to show in the navigation (the tab header, by default).
+---@field on_player_receive_fields nil|fun(self:SFInv.Page, player:mt.PlayerObjectRef, context:SFInv.Context, fields:unknown) On formspec submit.
+---@field on_enter nil|fun(self:SFInv.Page, player:mt.PlayerObjectRef, context:SFInv.Context) Called when the player changes pages, usually using the tabs.
+---@field on_leave nil|fun(self:SFInv.Page, player:mt.PlayerObjectRef, context:SFInv.Context) When leaving this page to go to another, called before other's on_enter.
+
+---@class SFInv.Page:SFInv.PageDef
+---@field name string
 
 ---@param name string
 ---@param def SFInv.PageDef
@@ -38,7 +41,7 @@ function sfinv.register_page(name, def)
     "Attempt to register already registered sfinv page " .. dump(name)
   )
 
-  sfinv.pages[name] = def
+  sfinv.pages[name] = def --[[@as SFInv.Page]]
   def.name = name
   table.insert(sfinv.pages_unordered, def)
 end
