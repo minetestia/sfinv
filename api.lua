@@ -1,3 +1,5 @@
+-- A cleaner, simpler solution to having an advanced inventory in Minetest.
+---@class SFInv
 sfinv = {
   pages = {},
   pages_unordered = {},
@@ -5,6 +7,25 @@ sfinv = {
   enabled = true,
 }
 
+-- Feel free to store own key/values here.
+--
+-- SFInv will clear the stored data on log out / log in.
+---@class SFInv.Context
+---@field page string Current page name.
+---@field nav string[] A list of page names.
+---@field nav_titles string[] A list of page titles.
+---@field nav_idx integer Current nav index (in nav and nav_titles).
+
+---@class SFInv.PageDef
+---@field title string Human readable page name.
+---@field get fun(self:SFInv, player:mt.PlayerObjectRef, context:SFInv.Context):string Returns a formspec string.
+---@field is_in_nav nil|fun(self:SFInv, player:mt.PlayerObjectRef, context:SFInv.Context):boolean Return true to show in the navigation (the tab header, by default).
+---@field on_player_receive_fields nil|fun(self:SFInv, player:mt.PlayerObjectRef, context:SFInv.Context, fields:unknown) On formspec submit.
+---@field on_enter nil|fun(self:SFInv, player:mt.PlayerObjectRef, context:SFInv.Context) Called when the player changes pages, usually using the tabs.
+---@field on_leave nil|fun(self:SFInv, player:mt.PlayerObjectRef, context:SFInv.Context) When leaving this page to go to another, called before other's on_enter.
+
+---@param name string
+---@param def SFInv.PageDef
 function sfinv.register_page(name, def)
   assert(name, "Invalid sfinv page. Requires a name")
   assert(def, "Invalid sfinv page. Requires a def[inition] table")
@@ -19,6 +40,11 @@ function sfinv.register_page(name, def)
   table.insert(sfinv.pages_unordered, def)
 end
 
+-- Overrides fields of an page registered with register_page.
+--
+-- Note: Page must already be defined, (opt)depend on the mod defining it.
+---@param name string
+---@param def SFInv.PageDef
 function sfinv.override_page(name, def)
   assert(name, "Invalid sfinv page override. Requires a name")
   assert(def, "Invalid sfinv page override. Requires a def[inition] table")
@@ -32,6 +58,12 @@ function sfinv.override_page(name, def)
   end
 end
 
+-- Creates tabheader or "".
+---@param player mt.PlayerObjectRef
+---@param context SFInv.Context
+---@param nav table
+---@param current_idx integer
+---@return string
 function sfinv.get_nav_fs(player, context, nav, current_idx)
   -- Only show tabs if there is more than one page
   if #nav > 1 then
@@ -58,6 +90,13 @@ local theme_inv = [[
 		list[current_player;main;0,6.35;8,3;8]
 	]]
 
+-- Adds a theme to a formspec.
+---@param player mt.PlayerObjectRef
+---@param context SFInv.Context
+---@param content string
+---@param show_inv boolean|nil Whether to show the player's main inventory.
+---@param size string|nil Defaults to `"size[8,9.1]"` if not specified.
+---@return string
 function sfinv.make_formspec(player, context, content, show_inv, size)
   local tmp = {
     size or "size[8,9.1]",
@@ -68,8 +107,15 @@ function sfinv.make_formspec(player, context, content, show_inv, size)
   return table.concat(tmp, "")
 end
 
+-- Get the page name of the first page to show to a player.
+---@param player mt.PlayerObjectRef
+---@return string
 function sfinv.get_homepage_name(player) return "sfinv:crafting" end
 
+-- Builds current page's formspec.
+---@param player mt.PlayerObjectRef
+---@param context SFInv.Context
+---@return string
 function sfinv.get_formspec(player, context)
   -- Generate navigation tabs
   local nav = {}
@@ -116,6 +162,9 @@ function sfinv.get_formspec(player, context)
   end
 end
 
+-- Gets the player's context.
+---@param player mt.PlayerObjectRef
+---@return SFInv.Context
 function sfinv.get_or_create_context(player)
   local name = player:get_player_name()
   local context = sfinv.contexts[name]
@@ -128,16 +177,24 @@ function sfinv.get_or_create_context(player)
   return context
 end
 
+---@param player mt.PlayerObjectRef
+---@param context SFInv.Context
 function sfinv.set_context(player, context)
   sfinv.contexts[player:get_player_name()] = context
 end
 
+-- (Re)builds page formspec and calls set_inventory_formspec().
+---@param player mt.PlayerObjectRef
+---@param context SFInv.Context|nil
 function sfinv.set_player_inventory_formspec(player, context)
   local fs =
     sfinv.get_formspec(player, context or sfinv.get_or_create_context(player))
   player:set_inventory_formspec(fs)
 end
 
+-- Changes the page.
+---@param player mt.PlayerObjectRef
+---@param pagename string
 function sfinv.set_page(player, pagename)
   local context = sfinv.get_or_create_context(player)
   local oldpage = sfinv.pages[context.page]
@@ -148,6 +205,8 @@ function sfinv.set_page(player, pagename)
   sfinv.set_player_inventory_formspec(player, context)
 end
 
+---@param player mt.PlayerObjectRef
+---@return string
 function sfinv.get_page(player)
   local context = sfinv.contexts[player:get_player_name()]
   return context and context.page or sfinv.get_homepage_name(player)
