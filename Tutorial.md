@@ -3,19 +3,19 @@
 ## Introduction <!-- omit in toc -->
 
 Simple Fast Inventory (SFINV) is a mod found in Minetest Game that is used to
-create the player's inventory formspec. SFINV comes with
-an API that allows you to add and otherwise manage the pages shown.
+create the player's inventory formspec. SFINV comes with an API that allows you
+to add and otherwise manage the pages shown.
 
-Whilst SFINV by default shows pages as tabs, pages are called pages
-because it is entirely possible that a mod or game decides to show them in
-some other format instead.
-For example, multiple pages could be shown in one formspec.
+Whilst SFINV by default shows pages as tabs, pages are called pages because it
+is entirely possible that a mod or game decides to show them in some other
+format instead. For example, multiple pages could be shown in one formspec.
 
-- [Registering a Page](#registering-a-page)
-- [Receiving events](#receiving-events)
-- [Conditionally showing to players](#conditionally-showing-to-players)
-- [on_enter and on_leave callbacks](#onenter-and-onleave-callbacks)
-- [Adding to an existing page](#adding-to-an-existing-page)
+- [SFINV Tutorial](#sfinv-tutorial)
+  - [Registering a Page](#registering-a-page)
+  - [Receiving events](#receiving-events)
+  - [Conditionally showing to players](#conditionally-showing-to-players)
+  - [on_enter and on_leave callbacks](#on_enter-and-on_leave-callbacks)
+  - [Adding to an existing page](#adding-to-an-existing-page)
 
 ## Registering a Page
 
@@ -33,8 +33,8 @@ sfinv.register_page("mymod:hello", {
 ```
 
 The `make_formspec` function surrounds your formspec with SFINV's formspec code.
-The fourth parameter, currently set as `true`, determines whether the
-player's inventory is shown.
+The fourth parameter, currently set as `true`, determines whether the player's
+inventory is shown.
 
 Let's make things more exciting; here is the code for the formspec generation
 part of a player admin tab. This tab will allow admins to kick or ban players by
@@ -78,8 +78,8 @@ sfinv.register_page("myadmin:myadmin", {
 })
 ```
 
-There's nothing new about the above code; all the concepts are
-covered above and in previous chapters.
+There's nothing new about the above code; all the concepts are covered above and
+in previous chapters.
 
 ## Receiving events
 
@@ -93,10 +93,10 @@ end,
 ```
 
 `on_player_receive_fields` works the same as
-`minetest.register_on_player_receive_fields`, except that `context` is
-given instead of `formname`.
-Please note that SFINV will consume events relevant to itself, such as
-navigation tab events, so you won't receive them in this callback.
+`minetest.register_on_player_receive_fields`, except that `context` is given
+instead of `formname`. Please note that SFINV will consume events relevant to
+itself, such as navigation tab events, so you won't receive them in this
+callback.
 
 Now let's implement the `on_player_receive_fields` for our admin mod:
 
@@ -133,9 +133,9 @@ on_player_receive_fields = function(self, player, context, fields)
 end,
 ```
 
-There's a rather large problem with this, however. Anyone can kick or ban players! You
-need a way to only show this to players with the kick or ban privileges.
-Luckily SFINV allows you to do this!
+There's a rather large problem with this, however. Anyone can kick or ban
+players! You need a way to only show this to players with the kick or ban
+privileges. Luckily SFINV allows you to do this!
 
 ## Conditionally showing to players
 
@@ -156,9 +156,9 @@ Note that the `is_in_nav` is only called when the player's inventory formspec is
 generated. This happens when a player joins the game, switches tabs, or a mod
 requests for SFINV to regenerate.
 
-This means that you need to manually request that SFINV regenerates the inventory
-formspec on any events that may change `is_in_nav`'s result. In our case,
-we need to do that whenever kick or ban is granted or revoked to a player:
+This means that you need to manually request that SFINV regenerates the
+inventory formspec on any events that may change `is_in_nav`'s result. In our
+case, we need to do that whenever kick or ban is granted or revoked to a player:
 
 ```lua
 local function on_grant_revoke(grantee, granter, priv)
@@ -185,18 +185,17 @@ minetest.register_on_priv_revoke(on_grant_revoke)
 
 ## on_enter and on_leave callbacks
 
-A player *enters* a tab when the tab is selected and *leaves* a
-tab when another tab is about to be selected.
-It's possible for multiple pages to be selected if a custom theme is
-used.
+A player _enters_ a tab when the tab is selected and _leaves_ a tab when another
+tab is about to be selected. It's possible for multiple pages to be selected if
+a custom theme is used.
 
-Note that these events may not be triggered by the player.
-The player may not even have the formspec open at that time.
-For example, on_enter is called for the home page when a player
-joins the game even before they open their inventory.
+Note that these events may not be triggered by the player. The player may not
+even have the formspec open at that time. For example, on_enter is called for
+the home page when a player joins the game even before they open their
+inventory.
 
-It's not possible to cancel a page change, as that would potentially
-confuse the player.
+It's not possible to cancel a page change, as that would potentially confuse the
+player.
 
 ```lua
 on_enter = function(self, player, context)
@@ -210,8 +209,8 @@ end,
 
 ## Adding to an existing page
 
-To add content to an existing page, you will need to override the page
-and modify the returned formspec.
+To add content to an existing page, you will need to override the page and
+modify the returned formspec.
 
 ```lua
 local old_func = sfinv.registered_pages["sfinv:crafting"].get
