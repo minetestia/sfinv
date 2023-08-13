@@ -1,8 +1,11 @@
 -- A cleaner, simpler solution to having an advanced inventory in Minetest.
 ---@class SFInv
 sfinv = {
+  ---@type table<string, SFInv.PageDef>
   pages = {},
+  ---@type SFInv.PageDef[]
   pages_unordered = {},
+  ---@type table<string, SFInv.Context>
   contexts = {},
   enabled = true,
 }
