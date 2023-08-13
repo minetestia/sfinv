@@ -19,10 +19,10 @@ sfinv = {
 ---@class SFInv.PageDef
 ---@field title string Human readable page name.
 ---@field get fun(self:SFInv, player:mt.PlayerObjectRef, context:SFInv.Context):string Returns a formspec string.
----@field is_in_nav nil|fun(self:SFInv, player:mt.PlayerObjectRef, context:SFInv.Context):boolean Return true to show in the navigation (the tab header, by default).
----@field on_player_receive_fields nil|fun(self:SFInv, player:mt.PlayerObjectRef, context:SFInv.Context, fields:unknown) On formspec submit.
----@field on_enter nil|fun(self:SFInv, player:mt.PlayerObjectRef, context:SFInv.Context) Called when the player changes pages, usually using the tabs.
----@field on_leave nil|fun(self:SFInv, player:mt.PlayerObjectRef, context:SFInv.Context) When leaving this page to go to another, called before other's on_enter.
+---@field is_in_nav nil|fun(self:SFInv.PageDef, player:mt.PlayerObjectRef, context:SFInv.Context):boolean Return true to show in the navigation (the tab header, by default).
+---@field on_player_receive_fields nil|fun(self:SFInv.PageDef, player:mt.PlayerObjectRef, context:SFInv.Context, fields:unknown) On formspec submit.
+---@field on_enter nil|fun(self:SFInv.PageDef, player:mt.PlayerObjectRef, context:SFInv.Context) Called when the player changes pages, usually using the tabs.
+---@field on_leave nil|fun(self:SFInv.PageDef, player:mt.PlayerObjectRef, context:SFInv.Context) When leaving this page to go to another, called before other's on_enter.
 
 ---@param name string
 ---@param def SFInv.PageDef
