@@ -189,7 +189,7 @@ function sfinv.set_context(player, context)
   sfinv.contexts[player:get_player_name()] = context
 end
 
--- (Re)builds page formspec and calls set_inventory_formspec().
+-- (Re)builds page formspec and calls `set_inventory_formspec()`.
 ---@param player mt.PlayerObjectRef
 ---@param context SFInv.Context|nil
 function sfinv.set_player_inventory_formspec(player, context)
