@@ -1,3 +1,6 @@
+-- Many `sfinv` fields are overwritable.
+---@diagnostic disable: duplicate-set-field
+
 -- A cleaner, simpler solution to having an advanced inventory in Minetest.
 ---@class SFInv
 sfinv = {
