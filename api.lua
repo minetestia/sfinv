@@ -24,6 +24,7 @@ sfinv = {
 
 ---@class SFInv.PageDef
 ---@field title string Human readable page name.
+---@field name string|nil Technical name, for example: `sfinv:crafting`.
 ---@field get fun(self:SFInv.Page, player:mt.PlayerObjectRef, context:SFInv.Context):string Returns a formspec string.
 ---@field is_in_nav nil|fun(self:SFInv.Page, player:mt.PlayerObjectRef, context:SFInv.Context):boolean Return true to show in the navigation (the tab header, by default).
 ---@field on_player_receive_fields nil|fun(self:SFInv.Page, player:mt.PlayerObjectRef, context:SFInv.Context, fields:unknown) On formspec submit.
