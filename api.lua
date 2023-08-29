@@ -71,7 +71,7 @@ end
 -- Creates tabheader or "".
 ---@param player mt.PlayerObjectRef
 ---@param context SFInv.Context
----@param nav table
+---@param nav string[]
 ---@param current_idx integer
 ---@return string
 function sfinv.get_nav_fs(player, context, nav, current_idx)
