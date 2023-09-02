@@ -1,3 +1,6 @@
+# THIS REPO IS OUTDATED
+Moved here: <https://notabug.org/minetestia/sfinv>
+
 # Simple Fast Inventory
 
 ![SFINV Screeny](screenshot.png)
